@@ -4,15 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
+using UnityEngine.SceneManagement;
 
 public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
+    public event Action OnStartedRunnerConnection;
+    public event Action OnPlayerJoinedSuccessfully;
 
     private NetworkRunner networkRunnerInstance;
 
     public async void StartGame(GameMode mode, string roomName)
     {
+        OnStartedRunnerConnection?.Invoke();
+
         if(networkRunnerInstance == null)
         {
             networkRunnerInstance = Instantiate(networkRunnerPrefab);
@@ -44,6 +49,10 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public void ShutDownRunner()
+    {
+        networkRunnerInstance.Shutdown();
+    }
 
  	//Callback when NetworkRunner successfully connects to a server or host.
     public void OnConnectedToServer (NetworkRunner runner)
@@ -78,7 +87,10 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
  	
     // Callback from a NetworkRunner when a new player has joined.
 	public void OnPlayerJoined (NetworkRunner runner, PlayerRef player)
-    {Debug.Log("OnPlayerJoined");}
+    {
+        Debug.Log("OnPlayerJoined");
+        OnPlayerJoinedSuccessfully?.Invoke();
+    }
  	
     //Callback from a NetworkRunner when a player has disconnected.
 	public void OnPlayerLeft (NetworkRunner runner, PlayerRef player)
@@ -99,7 +111,12 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
  	//Called when the runner is shutdown.
 	public void OnShutdown (NetworkRunner runner, ShutdownReason shutdownReason)
-    {Debug.Log("OnShutdown");}
+    {
+        Debug.Log("OnShutdown");
+
+        const string LOBBY_SCENE = "Lobby";
+        SceneManager.LoadScene(LOBBY_SCENE);
+    }
 
 	public void OnUserSimulationMessage (NetworkRunner runner, SimulationMessagePtr message)
     {Debug.Log("OnUserSimulationMessage");}
