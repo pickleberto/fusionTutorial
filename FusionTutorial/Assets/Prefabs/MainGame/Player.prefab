@@ -703,6 +703,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4027436625334469308}
+  gunPivot: {fileID: 3204684391868281484}
+  worldCanvas: {fileID: 872165670400259654}
 --- !u!1 &5333422916338143347
 GameObject:
   m_ObjectHideFlags: 0

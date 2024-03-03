@@ -86,6 +86,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
             CheckJumpInput(input);
         }
+
+        visualController.UpdateScaleTransforms(rigidbody.velocity);
     }
 
     public override void Render()
