@@ -11,7 +11,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner networkRunnerPrefab;
     public event Action OnStartedRunnerConnection;
     public event Action OnPlayerJoinedSuccessfully;
-
+    public string LocalPlayerNickname { get; private set; }
     private NetworkRunner networkRunnerInstance;
 
     public async void StartGame(GameMode mode, string roomName)
@@ -23,7 +23,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
             networkRunnerInstance = Instantiate(networkRunnerPrefab);
         }
 
-        //Register so we will get the callbacks as well
+        // Register so we will get the callbacks as well
         networkRunnerInstance.AddCallbacks(this);
 
         // ProvideInput means that that player is recording and sending inputs to the server.
@@ -53,6 +53,11 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     public void ShutDownRunner()
     {
         networkRunnerInstance.Shutdown();
+    }
+
+    public void SetLocalPlayerNickname(string str)
+    {
+        LocalPlayerNickname = str;
     }
 
  	//Callback when NetworkRunner successfully connects to a server or host.
