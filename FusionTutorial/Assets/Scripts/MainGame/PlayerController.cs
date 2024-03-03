@@ -5,9 +5,18 @@ using Fusion;
 
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
+
     [SerializeField] private float moveSpeed = 6;
+    [SerializeField] private float jumpForce = 1000;
+    [Networked] private NetworkButtons ButtonsPrev { get; set; }
     private Rigidbody2D rigidbody;
     private float horizontal;
+    
+    private enum PlayerInputButtons
+    {
+        None,
+        Jump
+    }
 
     public override void Spawned()
     {
@@ -34,15 +43,28 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         // 2.the requested type of input does not exist in the simulation
         if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
         {
-            rigidbody.velocity = new Vector2(input.HorizontalInput, rigidbody.velocity.y);
+            rigidbody.velocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody.velocity.y);
+
+            CheckJumpInput(input);
         }
+    }
+
+    private void CheckJumpInput(PlayerData input)
+    {
+        var pressed = input.NetworkButtons.GetPressed(ButtonsPrev);
+        if(pressed.WasPressed(ButtonsPrev, PlayerInputButtons.Jump))
+        {
+            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
+        }
+
+        ButtonsPrev = input.NetworkButtons;
     }
 
     public PlayerData GetPlayerNetworkInput()
     {
         PlayerData data = new PlayerData();
         data.HorizontalInput = horizontal;
-        
+        data.NetworkButtons.Set(PlayerInputButtons.Jump, Input.GetKey(KeyCode.Space));
         return data;
     }
 }
