@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 1492058271279180097}
   - component: {fileID: 6719627462421203238}
   - component: {fileID: 8151161785536300881}
+  - component: {fileID: 4943794352434781888}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -518,6 +519,7 @@ MonoBehaviour:
   - {fileID: 5833189195071052879}
   - {fileID: 6719627462421203238}
   - {fileID: 8151161785536300881}
+  - {fileID: 4943794352434781888}
   SimulationBehaviours: []
 --- !u!50 &4360323751401463554
 Rigidbody2D:
@@ -650,6 +652,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   player: {fileID: 6719627462421203238}
+--- !u!114 &4943794352434781888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4935067564786730345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3753efd55018cc649b94e53ad50bd882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  localCamera: {fileID: 1521660073636233954}
+  pivotToRotate: {fileID: 3204684391868281484}
 --- !u!1 &5333422916338143347
 GameObject:
   m_ObjectHideFlags: 0

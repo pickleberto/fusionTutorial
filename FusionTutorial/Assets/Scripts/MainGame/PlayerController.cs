@@ -15,6 +15,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [Networked] private NetworkButtons ButtonsPrev { get; set; }
     private Rigidbody2D rigidbody;
     private float horizontal;
+    private PlayerWeaponController weaponController;
     
     private enum PlayerInputButtons
     {
@@ -25,6 +26,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     public override void Spawned()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        weaponController = GetComponent<PlayerWeaponController>();
         SetLocalObjects();
     }
 
@@ -99,6 +101,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         PlayerData data = new PlayerData();
         data.HorizontalInput = horizontal;
+        data.GunPivotRotation = weaponController.LocalQuaternionPivotRotation;
         data.NetworkButtons.Set(PlayerInputButtons.Jump, Input.GetKey(KeyCode.Space));
         return data;
     }
