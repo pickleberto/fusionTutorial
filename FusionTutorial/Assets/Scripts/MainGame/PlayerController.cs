@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private Rigidbody2D rigidbody;
     private float horizontal;
     private PlayerWeaponController weaponController;
+    private PlayerVisualController visualController;
     
     private enum PlayerInputButtons
     {
@@ -27,6 +28,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         rigidbody = GetComponent<Rigidbody2D>();
         weaponController = GetComponent<PlayerWeaponController>();
+        visualController = GetComponent<PlayerVisualController>();
         SetLocalObjects();
     }
 
@@ -84,6 +86,11 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
             CheckJumpInput(input);
         }
+    }
+
+    public override void Render()
+    {
+        visualController.RenderVisuals(rigidbody.velocity);
     }
 
     private void CheckJumpInput(PlayerData input)

@@ -213,6 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4306296619201999035}
   - component: {fileID: 3902084387028701136}
+  - component: {fileID: 4027436625334469308}
   m_Layer: 0
   m_Name: Graphics
   m_TagString: Untagged
@@ -290,6 +291,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &4027436625334469308
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717995007673534846}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3970bfb9db56c9e43b0bf6b042b0a7ce, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2446802154240771546
 GameObject:
   m_ObjectHideFlags: 0
@@ -471,6 +493,7 @@ GameObject:
   - component: {fileID: 6719627462421203238}
   - component: {fileID: 8151161785536300881}
   - component: {fileID: 4943794352434781888}
+  - component: {fileID: 8916636753075289983}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -667,6 +690,19 @@ MonoBehaviour:
   _interpolationDataSource: 0
   localCamera: {fileID: 1521660073636233954}
   pivotToRotate: {fileID: 3204684391868281484}
+--- !u!114 &8916636753075289983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4935067564786730345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7781bc5dd70aa49b655003de7c73b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4027436625334469308}
 --- !u!1 &5333422916338143347
 GameObject:
   m_ObjectHideFlags: 0
