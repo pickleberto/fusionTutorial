@@ -7,7 +7,10 @@ public class PlayerVisualController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform gunPivot;
     [SerializeField] private Transform worldCanvas;
+    
     private readonly int isMovingHash = Animator.StringToHash("IsWalking");
+    private readonly int isShootingHash = Animator.StringToHash("IsShooting");
+
     private bool isFacingRight = true;
     private Vector3 originalPlayerScale;
     private Vector3 originalGunPivotScale;
@@ -20,16 +23,20 @@ public class PlayerVisualController : MonoBehaviour
         originalPlayerScale = transform.localScale;
         originalGunPivotScale = gunPivot.localScale;
         originalCanvasScale = worldCanvas.localScale;
-        
+
+        const int SHOOTING_LAYER_INDEX = 1;
+        animator.SetLayerWeight(SHOOTING_LAYER_INDEX, 1);
+
         init = true;
     }
 
-    public void RenderVisuals(Vector2 velocity)
+    public void RenderVisuals(Vector2 velocity, bool isShooting)
     {
         if(!init) return;
 
         bool isMoving = velocity.x > 0.1f || velocity.x < -0.1f;
         animator.SetBool(isMovingHash, isMoving);
+        animator.SetBool(isShootingHash, isShooting);
     }
 
     public void UpdateScaleTransforms(Vector2 velocity)
