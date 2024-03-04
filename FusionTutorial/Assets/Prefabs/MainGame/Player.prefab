@@ -543,6 +543,7 @@ GameObject:
   - component: {fileID: 8151161785536300881}
   - component: {fileID: 4943794352434781888}
   - component: {fileID: 8916636753075289983}
+  - component: {fileID: 5290469772811462952}
   - component: {fileID: 4360323751401463554}
   - component: {fileID: 1492058271279180097}
   m_Layer: 0
@@ -614,6 +615,7 @@ MonoBehaviour:
   - {fileID: 6719627462421203238}
   - {fileID: 8151161785536300881}
   - {fileID: 4943794352434781888}
+  - {fileID: 5290469772811462952}
   SimulationBehaviours: []
 --- !u!114 &5833189195071052879
 MonoBehaviour:
@@ -711,6 +713,21 @@ MonoBehaviour:
   animator: {fileID: 4027436625334469308}
   gunPivot: {fileID: 3204684391868281484}
   worldCanvas: {fileID: 872165670400259654}
+--- !u!114 &5290469772811462952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4935067564786730345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c105212a97b9b54aaea53c41eab6a34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  fillAmountImg: {fileID: 5526162169030050539}
+  healthAmountText: {fileID: 8044830814850147735}
 --- !u!50 &4360323751401463554
 Rigidbody2D:
   serializedVersion: 4
@@ -945,7 +962,7 @@ GameObject:
   - component: {fileID: 4902551374288720404}
   - component: {fileID: 8044830814850147735}
   m_Layer: 0
-  m_Name: Text (TMP) (1)
+  m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

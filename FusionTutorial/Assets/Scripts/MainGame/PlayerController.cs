@@ -41,6 +41,14 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
             var nickname = GlobalManagers.Instance.NetworkRunnerController.LocalPlayerNickname;
             RpcSetNickname(nickname);
         }
+        else 
+        {
+            // if this is not our InputAuthority (aka a proxy)
+            // We want to make sure to set the interpolation to snapshots
+            // as it will be automatically set to predicted because we are doing full physics prediction
+            // that will make sure that lag compensation works properly + be more cost efficient
+            GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
+        }
     }
 
     // Sends RPC to the HOST from a client
