@@ -5,11 +5,13 @@ using Fusion;
 
 public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 {
-    public Quaternion LocalQuaternionPivotRotation { get; private set; }
+    [SerializeField] private NetworkPrefabRef bulletPrefab = NetworkPrefabRef.Empty;
+    [SerializeField] private Transform firePointPos;
     [SerializeField] private float delayBetweenShots = 0.18f;
     [SerializeField] private ParticleSystem muzzleEffect;
     [SerializeField] private Camera localCamera;
     [SerializeField] private Transform pivotToRotate;
+    public Quaternion LocalQuaternionPivotRotation { get; private set; }
     
     // synchronized values
     [Networked] private Quaternion currentRotation { get; set; }
@@ -54,6 +56,8 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         {
             playMuzzleEffect = true;
             shootCooldown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
+
+            Runner.Spawn(bulletPrefab, firePointPos.position, firePointPos.rotation, Object.InputAuthority);
         }
         else
         {
