@@ -7,6 +7,8 @@ using TMPro;
 
 public class PlayerHealthController : NetworkBehaviour
 {
+    [SerializeField] private Animator bloodScreenHitAnimator;
+    [SerializeField] private PlayerCameraController cameraController;
     [SerializeField] private Image fillAmountImg;
     [SerializeField] private TextMeshProUGUI healthAmountText;
 
@@ -54,7 +56,10 @@ public class PlayerHealthController : NetworkBehaviour
     {
         if(Object.HasInputAuthority)
         {
-            Debug.Log("Local player got hit!");
+            const string BLOOD_HIT_CLIP_NAME = "BloodScreenHit";
+            bloodScreenHitAnimator.Play(BLOOD_HIT_CLIP_NAME);
+
+            cameraController.ShakeCamera();
         }
 
         if(healthAmount <= 0)
