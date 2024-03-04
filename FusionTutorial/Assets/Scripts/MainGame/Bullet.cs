@@ -5,6 +5,7 @@ using Fusion;
 
 public class Bullet : NetworkBehaviour
 {
+    [SerializeField] private LayerMask playerLayerMask;
     [SerializeField] private LayerMask groundLayerMask;
     [SerializeField] private float moveSpeed = 20;
     [SerializeField] private float lifeTimeAmount = 0.8f;
@@ -13,6 +14,7 @@ public class Bullet : NetworkBehaviour
     [Networked] private NetworkBool didHitSomething { get; set; }
 
     private Collider2D bulletCollider;
+    private List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
 
     public override void Spawned()
     {
@@ -22,7 +24,11 @@ public class Bullet : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        CheckIfHitGround();
+        if(!didHitSomething)
+        {
+            CheckIfHitGround();
+            CheckIfWeHitAPlayer();
+        }
 
         if(!lifeTimeTimer.ExpiredOrNotRunning(Runner) && !didHitSomething)
         {
@@ -31,6 +37,7 @@ public class Bullet : NetworkBehaviour
         
         if(lifeTimeTimer.Expired(Runner) || didHitSomething)
         {
+            lifeTimeTimer = TickTimer.None;
             Runner.Despawn(Object);
         }
     }
@@ -43,6 +50,32 @@ public class Bullet : NetworkBehaviour
         if(groundCollider != default)
         {
             didHitSomething = true;
+        }
+    }
+    
+    private void CheckIfWeHitAPlayer()
+    {
+        Runner.LagCompensation.OverlapBox(transform.position, bulletCollider.bounds.size,
+            Quaternion.identity, Object.InputAuthority, hits, playerLayerMask);
+
+        if(hits.Count > 0)
+        {
+            foreach(var item in hits)
+            {
+                if(item.Hitbox != null)
+                {
+                    var player = item.Hitbox.GetComponentInParent<NetworkObject>();
+                    var didNotHitOurOwnPlayer = player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
+
+                    if(didNotHitOurOwnPlayer)
+                    {
+                        //todo damage
+                        Debug.Log("Did hit a player");
+                        didHitSomething = true;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
