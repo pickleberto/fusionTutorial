@@ -11,14 +11,17 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private float moveSpeed = 6;
     [SerializeField] private float jumpForce = 1000;
 
+    [Networked] public NetworkBool PlayerIsAlive { get; private set; }
     [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> PlayerName { get; set; }
     [Networked] private NetworkButtons ButtonsPrev { get; set; }
-    [Networked] public NetworkBool PlayerIsAlive { get; private set; }
+    [Networked] private TickTimer respawnTimer { get; set; }
+    [Networked] private Vector2 nextSpawnPos { get; set; }
 
     private Rigidbody2D body;
     private float horizontal;
     private PlayerWeaponController weaponController;
     private PlayerVisualController visualController;
+    private PlayerHealthController healthController;
     
     public enum PlayerInputButtons
     {
@@ -32,6 +35,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         body = GetComponent<Rigidbody2D>();
         weaponController = GetComponent<PlayerWeaponController>();
         visualController = GetComponent<PlayerVisualController>();
+        healthController = GetComponent<PlayerHealthController>();
         SetLocalObjects();
         PlayerIsAlive = true;
     }
@@ -76,9 +80,16 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public void KillPlayer()
     {
+        if (Runner.IsServer)
+        {
+            nextSpawnPos = GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPos();
+        }
+
         PlayerIsAlive = false;
         body.simulated = false;
         visualController.TriggerDieAnimation();
+
+        respawnTimer = TickTimer.CreateFromSeconds(Runner, 5f);
     }
 
     // Happens before anything else Fusion does, every screen refresh;
@@ -96,6 +107,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     // FUN
     public override void FixedUpdateNetwork()
     {
+        CheckRespawnTimer();
+
         // will return false if:
         // 1.the client does not have State Authority or InputAuthority
         // 2.the requested type of input does not exist in the simulation
@@ -107,6 +120,26 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         }
 
         visualController.UpdateScaleTransforms(body.velocity);
+    }
+
+    private void CheckRespawnTimer()
+    {
+        if (PlayerIsAlive) return;
+
+        if(respawnTimer.Expired(Runner))
+        {
+            respawnTimer = TickTimer.None;
+            RespawnPlayer();
+        }
+    }
+
+    public void RespawnPlayer()
+    {
+        PlayerIsAlive = true;
+        body.simulated = true;
+        body.position = nextSpawnPos;
+        visualController.TriggerRespawnAnimation();
+        healthController.ResetHealthToMax();
     }
 
     public override void Render()

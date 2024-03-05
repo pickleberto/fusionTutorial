@@ -69,4 +69,9 @@ public class PlayerHealthController : NetworkBehaviour
             playerController.KillPlayer();
         }
     }
+
+    public void ResetHealthToMax()
+    {
+        currentHealthAmount = MAX_HEALTH_AMOUNT;
+    }
 }

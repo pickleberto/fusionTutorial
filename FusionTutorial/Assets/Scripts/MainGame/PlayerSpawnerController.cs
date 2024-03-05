@@ -8,6 +8,14 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
 
+    private void Awake()
+    {
+        if(GlobalManagers.Instance.PlayerSpawnerController == null)
+        {
+            GlobalManagers.Instance.PlayerSpawnerController = this;
+        }
+    }
+
     public override void Spawned()
     {
         if(!Runner.IsServer) return;
@@ -49,5 +57,11 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
         }
 
         Runner.SetPlayerObject(playerRef, null);
+    }
+
+    public Vector2 GetRandomSpawnPos()
+    {
+        int index = Random.Range(0, spawnPoints.Length - 1);
+        return spawnPoints[index].position;
     }
 }

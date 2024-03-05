@@ -11,6 +11,7 @@ public class PlayerVisualController : MonoBehaviour
     private readonly int isMovingHash = Animator.StringToHash("IsWalking");
     private readonly int isShootingHash = Animator.StringToHash("IsShooting");
     private readonly int dieTriggerHash = Animator.StringToHash("Die");
+    private readonly int respawnTriggerHash = Animator.StringToHash("Respawn");
 
     private bool isFacingRight = true;
     private Vector3 originalPlayerScale;
@@ -34,6 +35,11 @@ public class PlayerVisualController : MonoBehaviour
     public void TriggerDieAnimation()
     {
         animator.SetTrigger(dieTriggerHash);
+    }
+
+    public void TriggerRespawnAnimation()
+    {
+        animator.SetTrigger(respawnTriggerHash);
     }
 
     public void RenderVisuals(Vector2 velocity, bool isShooting)
