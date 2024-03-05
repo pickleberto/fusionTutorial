@@ -65,9 +65,10 @@ public class Bullet : NetworkBehaviour
             {
                 if(item.Hitbox != null)
                 {
-                    var player = item.Hitbox.GetComponentInParent<NetworkObject>();
-                    var didNotHitOurOwnPlayer = player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
-                    if(didNotHitOurOwnPlayer)
+                    var player = item.Hitbox.GetComponentInParent<PlayerController>();
+                    var didNotHitOurOwnPlayer = player.Object.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
+                    
+                    if(didNotHitOurOwnPlayer && player.PlayerIsAlive)
                     {
                         if(Runner.IsServer)
                         {

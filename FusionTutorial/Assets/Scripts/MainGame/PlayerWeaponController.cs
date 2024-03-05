@@ -20,9 +20,16 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     [Networked(OnChanged =nameof(OnMuzzleEffectStateChanged))] private NetworkBool playMuzzleEffect { get; set; }
     [Networked, HideInInspector] public NetworkBool IsHoldingShootKey { get; private set; }
 
+    private PlayerController playerController;
+
+    public override void Spawned()
+    {
+        playerController = GetComponent<PlayerController>();
+    }
+
     public void BeforeUpdate()
     {
-        if(Object.HasInputAuthority)
+        if(Object.HasInputAuthority && playerController.PlayerIsAlive)
         {
             var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
             var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -33,7 +40,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     // FUN
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.PlayerIsAlive)
         {
             // this only runs in the local client (has the input authority)
             CheckShootInput(input);

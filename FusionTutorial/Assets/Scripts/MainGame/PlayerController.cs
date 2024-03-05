@@ -13,6 +13,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> PlayerName { get; set; }
     [Networked] private NetworkButtons ButtonsPrev { get; set; }
+    [Networked] public NetworkBool PlayerIsAlive { get; private set; }
+
     private Rigidbody2D body;
     private float horizontal;
     private PlayerWeaponController weaponController;
@@ -31,6 +33,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         weaponController = GetComponent<PlayerWeaponController>();
         visualController = GetComponent<PlayerVisualController>();
         SetLocalObjects();
+        PlayerIsAlive = true;
     }
 
     private void SetLocalObjects()
@@ -71,12 +74,19 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         playerNameText.text = nickname + " " + Object.InputAuthority.PlayerId;
     }
 
+    public void KillPlayer()
+    {
+        PlayerIsAlive = false;
+        body.simulated = false;
+        visualController.TriggerDieAnimation();
+    }
+
     // Happens before anything else Fusion does, every screen refresh;
     // Called at the start of the Fusion Update loop, before the Fusion simulation loop.
     public void BeforeUpdate()
     {
         // We are the local machine
-        if (Object.HasInputAuthority)
+        if (Object.HasInputAuthority && PlayerIsAlive)
         {
             const string HORIZONTAL = "Horizontal";
             horizontal = Input.GetAxisRaw(HORIZONTAL);
@@ -89,7 +99,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         // will return false if:
         // 1.the client does not have State Authority or InputAuthority
         // 2.the requested type of input does not exist in the simulation
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && PlayerIsAlive)
         {
             body.velocity = new Vector2(input.HorizontalInput * moveSpeed, body.velocity.y);
 
