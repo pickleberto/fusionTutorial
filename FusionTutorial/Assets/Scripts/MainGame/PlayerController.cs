@@ -167,4 +167,11 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         data.NetworkButtons.Set(PlayerInputButtons.Shoot, Input.GetButton("Fire1"));
         return data;
     }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        // Avoid the pooling of player objects
+        GlobalManagers.Instance.ObjectPoolingManager.RemoveNetworkObjectFromDict(Object);
+        Destroy(gameObject);
+    }
 }
