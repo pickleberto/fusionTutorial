@@ -12,9 +12,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private float jumpForce = 1000;
 
     [Networked] public NetworkBool PlayerIsAlive { get; private set; }
-    [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> PlayerName { get; set; }
-    [Networked] private NetworkButtons ButtonsPrev { get; set; }
-    [Networked] private TickTimer respawnTimer { get; set; }
+    [Networked] public TickTimer RespawnTimer { get; private set; }
+    [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> playerName { get; set; }
+    [Networked] private NetworkButtons buttonsPrev { get; set; }
     [Networked] private Vector2 nextSpawnPos { get; set; }
 
     private Rigidbody2D body;
@@ -64,12 +64,12 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [Rpc(sources: RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RpcSetNickname(NetworkString<_8> nickname)
     {
-        PlayerName = nickname;
+        playerName = nickname;
     }
 
     private static void OnNicknameChanged(Changed<PlayerController> changed)
     {
-        var nickname = changed.Behaviour.PlayerName;
+        var nickname = changed.Behaviour.playerName;
         changed.Behaviour.SetPlayerNickname(nickname);
     }
 
@@ -89,7 +89,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         body.simulated = false;
         visualController.TriggerDieAnimation();
 
-        respawnTimer = TickTimer.CreateFromSeconds(Runner, 5f);
+        RespawnTimer = TickTimer.CreateFromSeconds(Runner, 5f);
     }
 
     // Happens before anything else Fusion does, every screen refresh;
@@ -126,9 +126,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if (PlayerIsAlive) return;
 
-        if(respawnTimer.Expired(Runner))
+        if(RespawnTimer.Expired(Runner))
         {
-            respawnTimer = TickTimer.None;
+            RespawnTimer = TickTimer.None;
             RespawnPlayer();
         }
     }
@@ -149,13 +149,13 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     private void CheckJumpInput(PlayerData input)
     {
-        var pressed = input.NetworkButtons.GetPressed(ButtonsPrev);
-        if(pressed.WasPressed(ButtonsPrev, PlayerInputButtons.Jump))
+        var pressed = input.NetworkButtons.GetPressed(buttonsPrev);
+        if(pressed.WasPressed(buttonsPrev, PlayerInputButtons.Jump))
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
         }
 
-        ButtonsPrev = input.NetworkButtons;
+        buttonsPrev = input.NetworkButtons;
     }
 
     public PlayerData GetPlayerNetworkInput()
