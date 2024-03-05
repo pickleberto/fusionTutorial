@@ -29,7 +29,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public void BeforeUpdate()
     {
-        if(Object.HasInputAuthority && playerController.PlayerIsAlive)
+        if(Object.HasInputAuthority && playerController.AcceptAnyInput)
         {
             var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
             var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -40,7 +40,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     // FUN
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.PlayerIsAlive)
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.AcceptAnyInput)
         {
             // this only runs in the local client (has the input authority)
             CheckShootInput(input);
