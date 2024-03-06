@@ -13,11 +13,16 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private float moveSpeed = 6;
     [SerializeField] private float jumpForce = 1000;
 
+    [Header("Grounded Vars")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundDetectionObj;
+
     [Networked] public NetworkBool PlayerIsAlive { get; private set; }
     [Networked] public TickTimer RespawnTimer { get; private set; }
     [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> playerName { get; set; }
     [Networked] private NetworkButtons buttonsPrev { get; set; }
     [Networked] private Vector2 nextSpawnPos { get; set; }
+    [Networked] private NetworkBool isGrounded { get; set; }
 
     private Rigidbody2D body;
     private float horizontal;
@@ -119,6 +124,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
             body.velocity = new Vector2(input.HorizontalInput * moveSpeed, body.velocity.y);
 
             CheckJumpInput(input);
+
+            buttonsPrev = input.NetworkButtons;
         }
 
         visualController.UpdateScaleTransforms(body.velocity);
@@ -151,13 +158,17 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     private void CheckJumpInput(PlayerData input)
     {
-        var pressed = input.NetworkButtons.GetPressed(buttonsPrev);
-        if(pressed.WasPressed(buttonsPrev, PlayerInputButtons.Jump))
-        {
-            body.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
-        }
+        isGrounded = (bool)Runner.GetPhysicsScene2D().OverlapBox(
+            groundDetectionObj.position, groundDetectionObj.localScale, 0, groundLayer);
 
-        buttonsPrev = input.NetworkButtons;
+        if(isGrounded)
+        {
+            var pressed = input.NetworkButtons.GetPressed(buttonsPrev);
+            if(pressed.WasPressed(buttonsPrev, PlayerInputButtons.Jump))
+            {
+                body.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
+            }
+        }
     }
 
     public PlayerData GetPlayerNetworkInput()
