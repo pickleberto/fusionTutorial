@@ -7,12 +7,21 @@ using TMPro;
 
 public class GameManager : NetworkBehaviour
 {
+    public event Action OnGameIsOver;
     public static bool MatchIsOver { get; private set; }
     [SerializeField] private Camera cam;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTimerAmount = 60;
 
     [Networked] private TickTimer matchTimer { get; set; }
+
+    private void Awake()
+    {
+        if(GlobalManagers.Instance != null)
+        {
+            GlobalManagers.Instance.GameManager = this;
+        }
+    }
 
     public override void Spawned()
     {
@@ -34,6 +43,7 @@ public class GameManager : NetworkBehaviour
             MatchIsOver = true;
             matchTimer = TickTimer.None;
             Debug.Log("Match timer has ended");
+            OnGameIsOver?.Invoke();
         }
     }
 }

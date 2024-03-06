@@ -40,12 +40,22 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     // FUN
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.AcceptAnyInput)
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
         {
             // this only runs in the local client (has the input authority)
-            CheckShootInput(input);
-            currentRotation = input.GunPivotRotation;
-            buttonsPrev = input.NetworkButtons;
+            if(playerController.AcceptAnyInput)
+            {
+                CheckShootInput(input);
+                currentRotation = input.GunPivotRotation;
+                buttonsPrev = input.NetworkButtons;
+            }
+            else
+            {
+                IsHoldingShootKey = false;
+                playMuzzleEffect = false;
+                buttonsPrev = default;
+                currentRotation = Quaternion.identity;
+            }
         }
 
         // this runs in the proxies as well, with the 
