@@ -23,12 +23,14 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [Networked] private NetworkButtons buttonsPrev { get; set; }
     [Networked] private Vector2 nextSpawnPos { get; set; }
     [Networked] private NetworkBool isGrounded { get; set; }
+    [Networked] private TickTimer repositionTimer { get; set; }
 
     private Rigidbody2D body;
     private float horizontal;
     private PlayerWeaponController weaponController;
     private PlayerVisualController visualController;
     private PlayerHealthController healthController;
+    private NetworkRigidbody2D netBody;
     
     public enum PlayerInputButtons
     {
@@ -43,6 +45,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         weaponController = GetComponent<PlayerWeaponController>();
         visualController = GetComponent<PlayerVisualController>();
         healthController = GetComponent<PlayerHealthController>();
+        netBody = GetComponent<NetworkRigidbody2D>();
         SetLocalObjects();
         PlayerIsAlive = true;
     }
@@ -89,16 +92,18 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public void KillPlayer()
     {
+        const int RESPAWN_TIME_SECONDS = 5;
         if (Runner.IsServer)
         {
             nextSpawnPos = GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPos();
+            repositionTimer = TickTimer.CreateFromSeconds(Runner, RESPAWN_TIME_SECONDS - 1);
         }
 
         PlayerIsAlive = false;
         body.simulated = false;
         visualController.TriggerDieAnimation();
 
-        RespawnTimer = TickTimer.CreateFromSeconds(Runner, 5f);
+        RespawnTimer = TickTimer.CreateFromSeconds(Runner, RESPAWN_TIME_SECONDS);
     }
 
     // Happens before anything else Fusion does, every screen refresh;
@@ -137,6 +142,13 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if (PlayerIsAlive) return;
 
+        // Will only run on the server
+        if(repositionTimer.Expired(Runner))
+        {
+            repositionTimer = TickTimer.None;
+            netBody.TeleportToPosition(nextSpawnPos);
+        }
+
         if(RespawnTimer.Expired(Runner))
         {
             RespawnTimer = TickTimer.None;
@@ -148,7 +160,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         PlayerIsAlive = true;
         body.simulated = true;
-        body.position = nextSpawnPos;
+        //body.position = nextSpawnPos;
         visualController.TriggerRespawnAnimation();
         healthController.ResetHealthToMax();
     }

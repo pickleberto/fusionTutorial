@@ -887,6 +887,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  deathGroundLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   bloodScreenHitAnimator: {fileID: 7547425072619611846}
   cameraController: {fileID: 2901526635072729332}
   fillAmountImg: {fileID: 5526162169030050539}
@@ -904,6 +907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impulseSource: {fileID: 16121597838090322}
+  confiner2D: {fileID: 5450274897556637083}
 --- !u!50 &4360323751401463554
 Rigidbody2D:
   serializedVersion: 4
@@ -1903,6 +1907,7 @@ GameObject:
   - component: {fileID: 54488943847577225}
   - component: {fileID: 223320589658973162}
   - component: {fileID: 2172413879124255058}
+  - component: {fileID: 5450274897556637083}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -1988,6 +1993,21 @@ MonoBehaviour:
     m_FrequencyGain: 1
     m_Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &5450274897556637083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8508827189398191078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BoundingShape2D: {fileID: 0}
+  m_Damping: 0.5
+  m_MaxWindowSize: -1
 --- !u!1001 &1597748905014844548
 PrefabInstance:
   m_ObjectHideFlags: 0

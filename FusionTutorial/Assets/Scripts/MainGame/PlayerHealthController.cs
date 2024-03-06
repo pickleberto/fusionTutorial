@@ -7,6 +7,7 @@ using TMPro;
 
 public class PlayerHealthController : NetworkBehaviour
 {
+    [SerializeField] private LayerMask deathGroundLayerMask;
     [SerializeField] private Animator bloodScreenHitAnimator;
     [SerializeField] private PlayerCameraController cameraController;
     [SerializeField] private Image fillAmountImg;
@@ -16,11 +17,25 @@ public class PlayerHealthController : NetworkBehaviour
 
     private const int MAX_HEALTH_AMOUNT = 100;
     private PlayerController playerController;
+    private Collider2D playerCollider;
 
     public override void Spawned()
     {
         currentHealthAmount = MAX_HEALTH_AMOUNT;
         playerController = GetComponent<PlayerController>();
+        playerCollider = GetComponent<Collider2D>();
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (Runner.IsServer && playerController.PlayerIsAlive)
+        {
+            var didHitCollider = Runner.GetPhysicsScene2D().OverlapBox(
+                transform.position, playerCollider.bounds.size, 0, deathGroundLayerMask);
+
+            if (didHitCollider != default)
+                Rpc_ReducePlayerHealth(MAX_HEALTH_AMOUNT);
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.StateAuthority)]

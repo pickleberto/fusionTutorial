@@ -9,6 +9,7 @@ public class GameManager : NetworkBehaviour
 {
     public event Action OnGameIsOver;
     public static bool MatchIsOver { get; private set; }
+    [field: SerializeField] public Collider2D CameraBoundaries { get; private set; }
     [SerializeField] private Camera cam;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTimerAmount = 60;

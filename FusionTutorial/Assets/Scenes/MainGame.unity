@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 3
+  <CameraBoundaries>k__BackingField: {fileID: 1317736697}
   cam: {fileID: 1317736696}
   timerText: {fileID: 1375296024}
   matchTimerAmount: 60
@@ -308,6 +309,11 @@ PrefabInstance:
 --- !u!20 &1317736696 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 3050599232417414940, guid: 5424e6480082674409f997b76fb71f90, type: 3}
+  m_PrefabInstance: {fileID: 1317736695}
+  m_PrefabAsset: {fileID: 0}
+--- !u!60 &1317736697 stripped
+PolygonCollider2D:
+  m_CorrespondingSourceObject: {fileID: 3505881839244130166, guid: 5424e6480082674409f997b76fb71f90, type: 3}
   m_PrefabInstance: {fileID: 1317736695}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1375296023
