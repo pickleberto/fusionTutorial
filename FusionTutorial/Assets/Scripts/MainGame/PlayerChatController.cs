@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class PlayerChatController : NetworkBehaviour
 {
@@ -32,7 +33,10 @@ public class PlayerChatController : NetworkBehaviour
         if (string.IsNullOrEmpty(inText)) return;
 
         RpcSetBubbleSpeech(inText);
-        //inputField.text = "";
+
+        inputField.text = string.Empty;
+        var eventSystem = EventSystem.current;
+        if (!eventSystem.alreadySelecting) eventSystem.SetSelectedGameObject(null);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]

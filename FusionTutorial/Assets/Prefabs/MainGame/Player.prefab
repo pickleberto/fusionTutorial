@@ -547,7 +547,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 857998557
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e2834761d612a904cb70fe56979ff358, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1592,7 +1592,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 64
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1628,7 +1628,7 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 9770b9e3379766245a894ed89035aa4f, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
-  m_RestoreOriginalTextOnEscape: 1
+  m_RestoreOriginalTextOnEscape: 0
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
@@ -1770,7 +1770,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 857998557
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 0153a70d8eef6a14e9651c966b4040e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1989,7 +1989,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 857998557
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 1b558840bc1361e4e85ec87a9cada0bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3252,7 +3252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 325349259781826233, guid: 0b3a52f296cbe3741aaadee48c1cc902, type: 3}
       propertyPath: m_SortingLayer
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 325349259781826235, guid: 0b3a52f296cbe3741aaadee48c1cc902, type: 3}
       propertyPath: m_LocalPosition.x
