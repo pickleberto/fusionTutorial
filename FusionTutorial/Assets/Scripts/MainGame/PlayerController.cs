@@ -51,7 +51,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if(Object.HasInputAuthority)
         {
+            playerCamera.transform.SetParent(null);
             playerCamera.SetActive(true);
+
             var nickname = GlobalManagers.Instance.NetworkRunnerController.LocalPlayerNickname;
             RpcSetNickname(nickname);
         }

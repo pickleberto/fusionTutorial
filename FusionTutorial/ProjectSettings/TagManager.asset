@@ -41,8 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2823071251
+    locked: 0
+  - name: Platform
+    uniqueID: 3768918955
+    locked: 0
   - name: Player
     uniqueID: 857998557
+    locked: 0
+  - name: Projectiles
+    uniqueID: 1085203633
     locked: 0
   - name: WorldUI
     uniqueID: 2794157747
