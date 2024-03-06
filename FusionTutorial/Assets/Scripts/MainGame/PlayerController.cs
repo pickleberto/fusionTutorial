@@ -27,6 +27,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     private Rigidbody2D body;
     private float horizontal;
+    private float vertical;
     private PlayerWeaponController weaponController;
     private PlayerVisualController visualController;
     private PlayerHealthController healthController;
@@ -115,6 +116,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         {
             const string HORIZONTAL = "Horizontal";
             horizontal = Input.GetAxisRaw(HORIZONTAL);
+            const string VERTICAL = "Vertical";
+            vertical = Input.GetAxisRaw(VERTICAL);
         }
     }
 
@@ -190,8 +193,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         PlayerData data = new PlayerData();
         data.HorizontalInput = horizontal;
         data.GunPivotRotation = weaponController.LocalQuaternionPivotRotation;
-        data.NetworkButtons.Set(PlayerInputButtons.Jump, Input.GetKey(KeyCode.Space));
         data.NetworkButtons.Set(PlayerInputButtons.Shoot, Input.GetButton("Fire1"));
+        var jump = Input.GetKey(KeyCode.Space) || vertical > 0;
+        data.NetworkButtons.Set(PlayerInputButtons.Jump, jump);
         return data;
     }
 
