@@ -38,14 +38,20 @@ public class PlayerChatController : NetworkBehaviour
     {
         if (string.IsNullOrEmpty(inText)) return;
 
-        RpcSetBubbleSpeech(inText);
+        Rpc_SendMessage(inText);
 
         inputField.text = string.Empty;
         var eventSystem = EventSystem.current;
         if (!eventSystem.alreadySelecting) eventSystem.SetSelectedGameObject(null);
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void Rpc_SendMessage(NetworkString<_64> msg)
+    {
+        RpcSetBubbleSpeech(msg);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcSetBubbleSpeech(NetworkString<_64> msg)
     {
         bubbleText.text = msg.Value;
