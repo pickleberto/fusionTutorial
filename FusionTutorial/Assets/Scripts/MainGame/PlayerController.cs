@@ -6,8 +6,9 @@ using TMPro;
 
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
-    public bool AcceptAnyInput => PlayerIsAlive && !GameManager.MatchIsOver && !PlayerChatController.IsTyping;
+    public bool AcceptAnyInput => PlayerIsAlive && !GameManager.MatchIsOver && !chatController.IsTyping;
 
+    [SerializeField] private PlayerChatController chatController;
     [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private float moveSpeed = 6;
@@ -129,13 +130,20 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         // will return false if:
         // 1.the client does not have State Authority or InputAuthority
         // 2.the requested type of input does not exist in the simulation
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && AcceptAnyInput)
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
         {
-            body.velocity = new Vector2(input.HorizontalInput * moveSpeed, body.velocity.y);
+            if(AcceptAnyInput)
+            {
+                body.velocity = new Vector2(input.HorizontalInput * moveSpeed, body.velocity.y);
 
-            CheckJumpInput(input);
+                CheckJumpInput(input);
 
-            buttonsPrev = input.NetworkButtons;
+                buttonsPrev = input.NetworkButtons;
+            }
+            else
+            {
+                body.velocity = Vector2.zero;
+            }
         }
 
         visualController.UpdateScaleTransforms(body.velocity);
@@ -163,7 +171,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         PlayerIsAlive = true;
         body.simulated = true;
-        //body.position = nextSpawnPos;
         visualController.TriggerRespawnAnimation();
         healthController.ResetHealthToMax();
     }

@@ -1290,6 +1290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  chatController: {fileID: 4755663136635628504}
   playerNameText: {fileID: 2765843653914884310}
   playerCamera: {fileID: 589685807181746351}
   moveSpeed: 6
@@ -2882,6 +2883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  _IsTyping: 0
   inputField: {fileID: 1104496836560980362}
   bubbleAnimator: {fileID: 8442535166865994065}
   bubbleText: {fileID: 7634860249864002950}

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerChatController : NetworkBehaviour
 {
-    public static bool IsTyping { get; private set; }
+    [Networked] public bool IsTyping { get; private set; }
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private Animator bubbleAnimator;
     [SerializeField] private TextMeshProUGUI bubbleText;
@@ -21,11 +21,17 @@ public class PlayerChatController : NetworkBehaviour
 
         if(isLocalPlayer)
         {
-            inputField.onSelect.AddListener((_) => IsTyping = true);
-            inputField.onDeselect.AddListener((_) => IsTyping = false);
+            inputField.onSelect.AddListener((_) => Rpc_UpdateServerTypingStatus(true));
+            inputField.onDeselect.AddListener((_) => Rpc_UpdateServerTypingStatus(false));
 
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
         }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void Rpc_UpdateServerTypingStatus(bool isTyping)
+    {
+        IsTyping = isTyping;
     }
 
     private void OnInputFieldSubmit(string inText)
