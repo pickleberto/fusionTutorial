@@ -36,11 +36,19 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if(!Runner.IsServer) return;
 
+        if (spawnedPlayers.TryGetValue(playerRef, out var playerNetworkObject))
+        {
+            // already instantiated, so leave
+            return;
+        }
+
+
         var index = playerRef.AsIndex % spawnPoints.Length;
         var spawnPosition = spawnPoints[index].transform.position;
         var playerObject = Runner.Spawn(playerNetworkPrefab, spawnPosition, Quaternion.identity, playerRef);
 
         Runner.SetPlayerObject(playerRef, playerObject);
+        AddToEntry(playerRef, playerObject);
     }
 
     public void AddToEntry(PlayerRef playerRef, NetworkObject playerObject)

@@ -54,8 +54,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         netBody = GetComponent<NetworkRigidbody2D>();
 
-        GlobalManagers.Instance.PlayerSpawnerController.AddToEntry(Object.InputAuthority, Object);
-
         SetLocalObjects();
         PlayerIsAlive = true;
     }
