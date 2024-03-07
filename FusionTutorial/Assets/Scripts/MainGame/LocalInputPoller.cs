@@ -44,4 +44,19 @@ public class LocalInputPoller : NetworkBehaviour, INetworkRunnerCallbacks
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player){ }
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player){ }
     public void OnReliableDataReceived (NetworkRunner runner, PlayerRef player, ArraySegment<byte> data){ }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
+    {
+        // Added in Fusion 2
+    }
 }

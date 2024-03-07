@@ -35,19 +35,22 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
             SessionName = roomName,
             PlayerCount = 4,
             SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>(),
-            ObjectPool = networkRunnerInstance.GetComponent<ObjectPoolingManager>()
+            ObjectProvider = networkRunnerInstance.GetComponent<ObjectPoolingManager>()
         };
 
         var result = await networkRunnerInstance.StartGame(startGameArgs);
 
-        if(result.Ok)
+        if(networkRunnerInstance.IsServer)
         {
-            const string SCENE_NAME = "MainGame";
-            networkRunnerInstance.SetActiveScene(SCENE_NAME);
-        }
-        else
-        {
-            Debug.Log($"Failed to start: {result.ShutdownReason}");
+            if(result.Ok)
+            {
+                const string SCENE_NAME = "MainGame";
+                await networkRunnerInstance.LoadScene(SCENE_NAME);
+            }
+            else
+            {
+                Debug.Log($"Failed to start: {result.ShutdownReason}");
+            }
         }
     }
 
@@ -127,4 +130,29 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
 	public void OnUserSimulationMessage (NetworkRunner runner, SimulationMessagePtr message)
     {Debug.Log("OnUserSimulationMessage");}
+
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+    {
+        // Added in Fusion 2
+    }
+
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
+    {
+        // Added in Fusion 2
+    }
 }

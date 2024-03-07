@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
+public class ObjectPoolingManager : MonoBehaviour, INetworkObjectProvider
 {
     // key: prefab; value: list of its instances
-    private Dictionary<NetworkObject, List<NetworkObject>> instantiatedPrefabs = new();
+    private Dictionary<INetworkPrefabSource, List<NetworkObject>> instantiatedPrefabs = new();
 
     private void Start()
     {
@@ -17,16 +17,18 @@ public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
     }
 
     // Called once runner.Spawn() is called
-    public NetworkObject AcquireInstance(NetworkRunner runner, NetworkPrefabInfo info)
+    NetworkObjectAcquireResult INetworkObjectProvider.AcquirePrefabInstance(NetworkRunner runner, in NetworkPrefabAcquireContext context, out NetworkObject result)
     {
         NetworkObject networkObject = null;
-        NetworkProjectConfig.Global.PrefabTable.TryGetPrefab(info.Prefab, out var prefab);
-        instantiatedPrefabs.TryGetValue(prefab, out var networkObjects);
+        NetworkPrefabId prefabId = context.PrefabId;
+        INetworkPrefabSource prefabSource = NetworkProjectConfig.Global.PrefabTable.GetSource(prefabId);
+
+        instantiatedPrefabs.TryGetValue(prefabSource, out var networkObjectsList);
 
         bool foundMatch = false;
-        if(networkObjects?.Count > 0)
+        if(networkObjectsList?.Count > 0)
         {
-            foreach(var item in networkObjects)
+            foreach(var item in networkObjectsList)
             {
                 if(item != null && !item.gameObject.activeSelf)
                 {
@@ -39,24 +41,25 @@ public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
 
         if(!foundMatch)
         {
-            networkObject = CreateObjectInstance(prefab);
+            networkObject = CreateObjectInstance(prefabSource);
         }
 
-        return networkObject;
+        result = networkObject;
+        return NetworkObjectAcquireResult.Success;
     }
 
-    private NetworkObject CreateObjectInstance(NetworkObject prefab)
+    private NetworkObject CreateObjectInstance(INetworkPrefabSource prefabSource)
     {
-        var obj = Instantiate(prefab);
+        var obj = Instantiate(prefabSource.WaitForResult(), Vector3.zero, Quaternion.identity);
 
-        if(instantiatedPrefabs.TryGetValue(prefab, out var instances))
+        if(instantiatedPrefabs.TryGetValue(prefabSource, out var instances))
         {
             instances.Add(obj);
         }
         else
         {
             var list = new List<NetworkObject> { obj };
-            instantiatedPrefabs.Add(prefab, list);
+            instantiatedPrefabs.Add(prefabSource, list);
         }
 
         return obj;
@@ -64,9 +67,9 @@ public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
 
 
     // Called once runner.Despawn() is called
-    public void ReleaseInstance(NetworkRunner runner, NetworkObject instance, bool isSceneObject)
+    void INetworkObjectProvider.ReleaseInstance(NetworkRunner runner, in NetworkObjectReleaseContext context)
     {
-        instance.gameObject.SetActive(false);
+        context.Object.gameObject.SetActive(false);
     }
 
     public void RemoveNetworkObjectFromDict(NetworkObject obj)
@@ -75,7 +78,7 @@ public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
         {
             foreach(var instanceList in instantiatedPrefabs.Values)
             {
-                if(instanceList.Contains(obj))
+                if (instanceList.Contains(obj))
                 {
                     instanceList.Remove(obj);
                 }

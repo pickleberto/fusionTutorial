@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 597036304443353984}
   - component: {fileID: 5333658699701279945}
   - component: {fileID: 7595399146577620737}
+  - component: {fileID: 5692848078849313372}
   m_Layer: 0
   m_Name: NetworkRunner
   m_TagString: Untagged
@@ -58,8 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a93abf1a391964a94e5c139605105b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowHierarchyWindowOverlay: 1
-  PostLoadDelayFrames: 1
+  IsSceneTakeOverEnabled: 1
+  LogSceneLoadErrors: 1
+  AddressableScenesLabel: FusionScenes
 --- !u!114 &7595399146577620737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,3 +74,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89701fa58b1598f488b796138b3aa134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5692848078849313372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4885249398771883383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fd79d79a0fb459ababab9a78f00caa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _physicsAuthority: 2
+  _physicsTiming: 3
+  ForwardOnly: 0
+  DeltaTimeMultiplier: 1
+  SetUnityFixedTimestep: 0

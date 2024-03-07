@@ -13,14 +13,16 @@ public class PlayerHealthController : NetworkBehaviour
     [SerializeField] private Image fillAmountImg;
     [SerializeField] private TextMeshProUGUI healthAmountText;
 
-    [Networked(OnChanged =nameof(HealthAmountChanged))] private int currentHealthAmount { get; set; }
+    [Networked] private int currentHealthAmount { get; set; }
 
     private const int MAX_HEALTH_AMOUNT = 100;
     private PlayerController playerController;
     private Collider2D playerCollider;
+    private ChangeDetector changeDetector;
 
     public override void Spawned()
     {
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         currentHealthAmount = MAX_HEALTH_AMOUNT;
         playerController = GetComponent<PlayerController>();
         playerCollider = GetComponent<Collider2D>();
@@ -44,20 +46,31 @@ public class PlayerHealthController : NetworkBehaviour
         currentHealthAmount -= damage;
     }
 
-    private static void HealthAmountChanged(Changed<PlayerHealthController> changed)
+    public override void Render()
     {
-        var currrentHealth = changed.Behaviour.currentHealthAmount;
-        changed.LoadOld();
-        var oldHealth = changed.Behaviour.currentHealthAmount;
+        foreach(var change in changeDetector.DetectChanges(this, out var prev, out var current))
+        {
+            switch (change)
+            {
+                case nameof(currentHealthAmount):
+                    var reader = GetPropertyReader<int>(nameof(currentHealthAmount));
+                    var (oldHealth, currentHealth) = reader.Read(prev, current);
+                    HealthAmountChanged(oldHealth, currentHealth);
+                    break;
+            }
+        }
+    }
 
+    private void HealthAmountChanged(int oldHealth, int currrentHealth)
+    {
         if(currrentHealth != oldHealth)
         {
-            changed.Behaviour.UpdateVisuals(currrentHealth);
+            UpdateVisuals(currrentHealth);
             
             // We did not respawn or just spawned
             if(currrentHealth != MAX_HEALTH_AMOUNT)
             {
-                changed.Behaviour.PlayerGotHit(currrentHealth);
+                PlayerGotHit(currrentHealth);
             }
         }
     }

@@ -7,6 +7,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 {
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
+    private Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Awake()
     {
@@ -34,12 +35,17 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     private void SpawnPlayer(PlayerRef playerRef)
     {
         if(!Runner.IsServer) return;
-        
-        var index = playerRef % spawnPoints.Length;
+
+        var index = playerRef.AsIndex % spawnPoints.Length;
         var spawnPosition = spawnPoints[index].transform.position;
         var playerObject = Runner.Spawn(playerNetworkPrefab, spawnPosition, Quaternion.identity, playerRef);
 
         Runner.SetPlayerObject(playerRef, playerObject);
+    }
+
+    public void AddToEntry(PlayerRef playerRef, NetworkObject playerObject)
+    {
+        spawnedPlayers.TryAdd(playerRef, playerObject);
     }
 
     public void PlayerLeft(PlayerRef player)
@@ -51,7 +57,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if(!Runner.IsServer) return;
 
-        if(Runner.TryGetPlayerObject(playerRef, out var playerNetworkObject))
+        if(spawnedPlayers.TryGetValue(playerRef, out var playerNetworkObject))
         {
             Runner.Despawn(playerNetworkObject);
         }

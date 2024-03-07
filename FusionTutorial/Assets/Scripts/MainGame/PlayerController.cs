@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using TMPro;
+using Fusion.Addons.Physics;
 
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
@@ -20,7 +21,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     [Networked] public NetworkBool PlayerIsAlive { get; private set; }
     [Networked] public TickTimer RespawnTimer { get; private set; }
-    [Networked(OnChanged = nameof(OnNicknameChanged))] private NetworkString<_8> playerName { get; set; }
+    [Networked] private NetworkString<_8> playerName { get; set; }
     [Networked] private NetworkButtons buttonsPrev { get; set; }
     [Networked] private Vector2 nextSpawnPos { get; set; }
     [Networked] private NetworkBool isGrounded { get; set; }
@@ -33,6 +34,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private PlayerVisualController visualController;
     private PlayerHealthController healthController;
     private NetworkRigidbody2D netBody;
+    private ChangeDetector changeDetector;
     
     public enum PlayerInputButtons
     {
@@ -43,11 +45,17 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
         body = GetComponent<Rigidbody2D>();
         weaponController = GetComponent<PlayerWeaponController>();
         visualController = GetComponent<PlayerVisualController>();
         healthController = GetComponent<PlayerHealthController>();
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         netBody = GetComponent<NetworkRigidbody2D>();
+
+        GlobalManagers.Instance.PlayerSpawnerController.AddToEntry(Object.InputAuthority, Object);
+
         SetLocalObjects();
         PlayerIsAlive = true;
     }
@@ -68,7 +76,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
             // We want to make sure to set the interpolation to snapshots
             // as it will be automatically set to predicted because we are doing full physics prediction
             // that will make sure that lag compensation works properly + be more cost efficient
-            GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
+            base.Object.RenderSource = RenderSource.Interpolated;
+            base.Object.RenderTimeframe = RenderTimeframe.Remote;
         }
     }
 
@@ -79,12 +88,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private void RpcSetNickname(NetworkString<_8> nickname)
     {
         playerName = nickname;
-    }
-
-    private static void OnNicknameChanged(Changed<PlayerController> changed)
-    {
-        var nickname = changed.Behaviour.playerName;
-        changed.Behaviour.SetPlayerNickname(nickname);
     }
 
     private void SetPlayerNickname(NetworkString<_8> nickname)
@@ -157,7 +160,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         if(repositionTimer.Expired(Runner))
         {
             repositionTimer = TickTimer.None;
-            netBody.TeleportToPosition(nextSpawnPos);
+            netBody.Teleport(nextSpawnPos);
         }
 
         if(RespawnTimer.Expired(Runner))
@@ -178,6 +181,18 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     public override void Render()
     {
         visualController.RenderVisuals(body.velocity, weaponController.IsHoldingShootKey);
+
+        foreach (var change in changeDetector.DetectChanges(this, out var prev, out var current))
+        {
+            switch (change)
+            {
+                case nameof(playerName):
+                    var reader = GetPropertyReader<NetworkString<_8>>(nameof(playerName));
+                    var (_, nickname) = reader.Read(prev, current);
+                    SetPlayerNickname(nickname);
+                    break;
+            }
+        }
     }
 
     private void CheckJumpInput(PlayerData input)

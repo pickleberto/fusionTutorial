@@ -17,14 +17,18 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     [Networked] private Quaternion currentRotation { get; set; }
     [Networked] private NetworkButtons buttonsPrev { get; set; }
     [Networked] private TickTimer shootCooldown { get; set; }
-    [Networked(OnChanged =nameof(OnMuzzleEffectStateChanged))] private NetworkBool playMuzzleEffect { get; set; }
+    [Networked] private NetworkBool playMuzzleEffect { get; set; }
     [Networked, HideInInspector] public NetworkBool IsHoldingShootKey { get; private set; }
 
     private PlayerController playerController;
+    private ChangeDetector changeDetector;
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
         playerController = GetComponent<PlayerController>();
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
     public void BeforeUpdate()
@@ -73,8 +77,11 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         {
             playMuzzleEffect = true;
             shootCooldown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
-
-            Runner.Spawn(bulletPrefab, firePointPos.position, firePointPos.rotation, Object.InputAuthority);
+    
+            if(Runner.IsServer)
+            {
+                Runner.Spawn(bulletPrefab, firePointPos.position, firePointPos.rotation, Object.InputAuthority);
+            }
         }
         else
         {
@@ -82,16 +89,18 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         }
     }
 
-    private static void OnMuzzleEffectStateChanged(Changed<PlayerWeaponController> changed)
+    public override void Render()
     {
-        var currentState = changed.Behaviour.playMuzzleEffect;
-        
-        changed.LoadOld();
-        var oldState = changed.Behaviour.playMuzzleEffect;
-
-        if(oldState != currentState)
+        foreach(var change in changeDetector.DetectChanges(this, out var prev, out var current))
         {
-            changed.Behaviour.PlayOrStopMuzzleEffect(currentState);
+            switch(change)
+            {
+                case nameof(playMuzzleEffect):
+                    var reader = GetPropertyReader<NetworkBool>(nameof(playMuzzleEffect));
+                    var (_, currentState) = reader.Read(prev, current);
+                    PlayOrStopMuzzleEffect(currentState);
+                    break;
+            }
         }
     }
 

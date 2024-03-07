@@ -19,6 +19,8 @@ public class Bullet : NetworkBehaviour
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
         bulletCollider = GetComponent<Collider2D>();
         lifeTimeTimer = TickTimer.CreateFromSeconds(Runner, lifeTimeAmount);
     }

@@ -1055,7 +1055,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   SphereRadius: 0
+  CapsuleRadius: 0
   BoxExtents: {x: 0.26, y: 0.38, z: 0.1}
+  CapsuleExtents: 0
   Offset: {x: -0.03, y: -0.08, z: 0}
   Root: {fileID: 3644707326801137968}
   GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -1211,7 +1213,6 @@ MonoBehaviour:
   m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   Config: 1
   BroadRadius: 0.5566088
   Offset: {x: 0, y: 0, z: 0}
@@ -1230,14 +1231,9 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SortKey: 778520595
   ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2305
-  NetworkGuid:
-    RawGuidValue: 3f418b9a763ae904599da9eb70285612
+  Flags: 264449
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3644707326801137968}
@@ -1246,9 +1242,8 @@ MonoBehaviour:
   - {fileID: 8151161785536300881}
   - {fileID: 4943794352434781888}
   - {fileID: 5290469772811462952}
-  - {fileID: 4755663136635628504}
-  SimulationBehaviours:
   - {fileID: 2609558567092428503}
+  - {fileID: 4755663136635628504}
 --- !u!114 &5833189195071052879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1258,25 +1253,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4935067564786730345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1779252708, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: c5e690b5fb1084f5ab1c86457af401d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
-  InterpolationSpace: 0
-  InterpolationTarget: {fileID: 8113263574786222289}
-  InterpolateErrorCorrection: 0
-  InterpolatedErrorCorrectionSettings:
-    MinRate: 3.3
-    MaxRate: 10
-    PosBlendStart: 0.25
-    PosBlendEnd: 1
-    PosMinCorrection: 0.025
-    PosTeleportDistance: 2
-    RotBlendStart: 0.1
-    RotBlendEnd: 0.5
-    RotTeleportRadians: 1.5
-  UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.03
+  SyncScale: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
 --- !u!114 &6719627462421203238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1289,7 +1278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a58c34bb67220145bc14102f45a6af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   chatController: {fileID: 4755663136635628504}
   playerNameText: {fileID: 2765843653914884310}
   playerCamera: {fileID: 589685807181746351}
@@ -1313,7 +1301,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d9e104c6628194e9daca85c466b80c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   player: {fileID: 6719627462421203238}
 --- !u!114 &4943794352434781888
 MonoBehaviour:
@@ -1327,7 +1314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3753efd55018cc649b94e53ad50bd882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   bulletPrefab:
     RawGuidValue: 430e27ed1cc9e7e41a8f81c1a7935026
   firePointPos: {fileID: 8636274319740378245}
@@ -1364,7 +1350,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c105212a97b9b54aaea53c41eab6a34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   deathGroundLayerMask:
     serializedVersion: 2
     m_Bits: 512
@@ -2882,7 +2867,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed4e7afb9ebdd14d8c2bd878c9011ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   _IsTyping: 0
   inputField: {fileID: 1104496836560980362}
   bubbleAnimator: {fileID: 8442535166865994065}
