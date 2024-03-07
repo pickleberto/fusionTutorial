@@ -22,10 +22,13 @@ public class PlayerHealthController : NetworkBehaviour
 
     public override void Spawned()
     {
-        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        currentHealthAmount = MAX_HEALTH_AMOUNT;
         playerController = GetComponent<PlayerController>();
         playerCollider = GetComponent<Collider2D>();
+
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        
+        currentHealthAmount = MAX_HEALTH_AMOUNT;
+        HealthAmountChanged(0, currentHealthAmount);
     }
 
     public override void FixedUpdateNetwork()

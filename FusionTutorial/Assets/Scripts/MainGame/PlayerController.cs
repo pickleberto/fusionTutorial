@@ -76,6 +76,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
             // that will make sure that lag compensation works properly + be more cost efficient
             base.Object.RenderSource = RenderSource.Interpolated;
             base.Object.RenderTimeframe = RenderTimeframe.Remote;
+
+
+            SetPlayerNickname(playerName);
         }
     }
 

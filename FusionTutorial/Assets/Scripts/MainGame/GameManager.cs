@@ -26,8 +26,9 @@ public class GameManager : NetworkBehaviour
 
     public override void Spawned()
     {
-        MatchIsOver = false;
+        Runner.SetIsSimulated(Object, true);
 
+        MatchIsOver = false;
         cam.gameObject.SetActive(false);
         matchTimer = TickTimer.CreateFromSeconds(Runner, matchTimerAmount);
     }
