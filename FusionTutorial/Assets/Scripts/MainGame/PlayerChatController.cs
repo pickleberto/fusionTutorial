@@ -13,6 +13,7 @@ public class PlayerChatController : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI bubbleText;
 
     private readonly int openBubbleTriggerHash = Animator.StringToHash("Open");
+    private readonly int isTypingHash = Animator.StringToHash("IsTyping");
 
     public override void Spawned()
     {
@@ -32,6 +33,13 @@ public class PlayerChatController : NetworkBehaviour
     private void Rpc_UpdateServerTypingStatus(bool isTyping)
     {
         IsTyping = isTyping;
+        RpcUpdateTypingStatus(IsTyping);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcUpdateTypingStatus(bool isTyping)
+    {
+        bubbleAnimator.SetBool(isTypingHash, isTyping);
     }
 
     private void OnInputFieldSubmit(string inText)
