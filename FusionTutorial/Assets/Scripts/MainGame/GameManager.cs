@@ -8,12 +8,12 @@ using TMPro;
 public class GameManager : NetworkBehaviour
 {
     public event Action OnGameIsOver;
+    public event Action<string> OnRoomNameReady;
     public static bool MatchIsOver { get; private set; }
     [field: SerializeField] public Collider2D CameraBoundaries { get; private set; }
     [SerializeField] private Camera cam;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTimerAmount = 60;
-    [SerializeField] private TextMeshProUGUI roomNameText;
 
     [Networked] private TickTimer matchTimer { get; set; }
 
@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour
         MatchIsOver = false;
         cam.gameObject.SetActive(false);
         matchTimer = TickTimer.CreateFromSeconds(Runner, matchTimerAmount);
-        roomNameText.text = Runner.SessionInfo.Name;
+        OnRoomNameReady?.Invoke(Runner.SessionInfo.Name);
     }
 
     public override void FixedUpdateNetwork()
