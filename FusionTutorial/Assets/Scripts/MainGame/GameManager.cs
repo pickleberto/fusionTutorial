@@ -13,6 +13,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTimerAmount = 60;
+    [SerializeField] private TextMeshProUGUI roomNameText;
 
     [Networked] private TickTimer matchTimer { get; set; }
 
@@ -31,6 +32,7 @@ public class GameManager : NetworkBehaviour
         MatchIsOver = false;
         cam.gameObject.SetActive(false);
         matchTimer = TickTimer.CreateFromSeconds(Runner, matchTimerAmount);
+        roomNameText.text = Runner.SessionInfo.Name;
     }
 
     public override void FixedUpdateNetwork()
